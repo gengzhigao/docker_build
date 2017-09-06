@@ -1,0 +1,35 @@
+############################################################
+# Dockerfile to build Nginx Installed Containers
+# Based on Centos
+############################################################
+# Set the base image to Centos
+FROM docker.io/centos:6.6
+# File Author / Maintainer
+MAINTAINER Maintaner gengzhi
+# Modify the zone
+RUN echo "" > /etc/sysconfig/clock; \
+    echo "ZONE=Asia/Shanghai" >> /etc/sysconfig/clock; \
+    mv /etc/localtime /etc/localtime_bak; \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+# Add nginx.repo to the default sources
+ADD nginx.repo /etc/yum.repos.d/
+# Download and Install Nginx
+RUN yum clean all
+RUN yum install -y nginx
+# Remove the default Nginx configuration file
+RUN rm -v /etc/nginx/nginx.conf
+# Copy a configuration file from the current directory
+ADD nginx.conf /etc/nginx/
+# Install glusterfs client
+RUN yum install -y glusterfs glusterfs-cli glusterfs-fuse
+# Expose ports
+EXPOSE 80
+EXPOSE 443
+EXPOSE 18443
+EXPOSE 28443
+# Add loader.sh start script
+RUN mkdir -p /opt/emm
+ADD loader.sh /bin/
+RUN chmod +x /bin/loader.sh
+# Set the default command to execute
+CMD /bin/loader.sh

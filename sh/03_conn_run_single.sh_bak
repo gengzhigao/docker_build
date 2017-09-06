@@ -1,0 +1,147 @@
+#!/bin/bash
+dir_current=$(cd `dirname $0`; pwd)
+dir_data=/data
+cont_run_path=${dir_current}/tools
+config_file=${dir_current}/config.conf
+
+function config_conver()
+{
+	read -p "是否覆盖env目录下的config_single文件到当前目录下的config文件(Y/n)" input
+	if [ "$input" = "y" ] || [ "$input" = "Y" ] || [ "$input" = "" ]; then
+		\cp env/config.conf-single $config_file
+	fi
+}
+
+function cont_run()
+{
+    host=ENV1
+    i=0
+    docker_host=`grep ${host}.CONTAINER ${config_file} | awk -F= '{print $2}'`
+    images_db=`grep IMAGES_DB ${config_file} | awk -F= '{print $2}'`
+    IFS=";"
+    arr=($docker_host)
+    for container_name in ${arr[@]}
+    do
+        #images_name 容器对应的镜像名，对应config.conf文件中的 ${container_name}.IMAGES
+        images_name=`grep ${container_name}.IMAGES ${config_file} | awk -F= '{print $2}'`
+        #container_role 容器对应的角色名，例如，MySQL容器有mysql-1角色和mysql-2角色，不同角色对应conf目录中不同的env_${container_role}.conf文件
+        container_role=`grep ${host}.${container_name}.ROLE ${config_file} | awk -F= '{print $2}'`
+        #container_path 容器对应的启动目录，标准为"/data/容器对应的镜像名/容器名称"
+        container_path="/data"/`echo ${images_name}| tr "[:upper:]" "[:lower:]"`/${container_name}
+
+        read -p "是否解压缩 ${container_name} 容器 data 目录:(Y/n)" input
+        if [ "$input" = "y" ] || [ "$input" = "Y" ] || [ "$input" = "" ]; then
+            mkdir -p ${container_path}
+            tar -xzf ${dir_current}/../data/env_`echo ${images_name}| tr "[:upper:]" "[:lower:]"`*.tar.gz -C ${container_path}
+			chmod 755 ${container_path}
+            chown -R root:root ${container_path}
+        fi
+        #针对主机存在tomcat镜像的机器，在操作系统安装共享文件夹，一边调整mam.properties和创建ca证书等
+		if [ ${images_name} == "TOMCAT" ]; then
+			${dir_current}/tools/os_client.sh
+		fi
+        # 启动容器
+        tools/cont_run.sh ${container_name} ${container_path} ${container_role}
+
+        # 如果是MYSQL容器或者MONGO容器，需要执行响应的初始化语句脚本
+        if [[ ${container_name} = "MYSQL" ]]; then
+        	${cont_run_path}/mysql_init_data.sh 
+        elif [[ ${container_name} = "MONGO" ]]; then
+        	${cont_run_path}/mongo_init_data.sh
+        fi
+    done
+}
+
+function check_docker()
+{
+	while :
+	do
+		echo -e "***************************************************************************"
+		echo -e "*接下来将要运行docker容器，请在运行容器之前，\033[31;1m请确保docker已配置为LVM模式，\033[0m*"
+		echo -e "*配置文件为/etc/sysconfig/docker*"
+		echo -e "***************************************************************************"
+		read -p "是否确定docker已配置成LVM模式:(Y/n)" input
+		if [ "$input" = "y" ] || [ "$input" = "Y" ] || [ "$input" = "" ]; then
+			#systemctl restart docker
+			echo "下面开始启动单机版docker容器："
+		fi  
+		if [ "$input" == "y" ] || [ "$input" == "n" ] || [ "$input" == "Y" ] || [ "$input" == "N" ] || [ "$input" == "" ]; then
+			break
+		fi  
+	done
+} 
+
+function cont_single()
+{
+	echo -e "**************************************************"
+	echo -e "*接下来将要运行所有的 docker 容器"
+	echo -e "**************************************************"
+	while :
+	do
+		read -p "是否需要运行所有的 docker 容器:(Y/n)" input
+		if [ "$input" = "y" ] || [ "$input" = "Y" ] || [ "$input" = "" ]; then
+			${cont_run_path}/cont_run.sh GFS
+			${cont_run_path}/os_client.sh 
+			${cont_run_path}/cont_run.sh MYSQL
+			${cont_run_path}/mysql_init_data.sh 
+			${cont_run_path}/cont_run.sh MONGO
+			${cont_run_path}/mongo_init_data.sh 
+			${cont_run_path}/cont_run.sh REDIS6379
+			${cont_run_path}/cont_run.sh BAASADMIN
+			${cont_run_path}/cont_run.sh IM
+			${cont_run_path}/cont_run.sh EMMWEB
+			${cont_run_path}/cont_run.sh NGINX
+			${cont_run_path}/cont_run.sh OA
+		fi
+		if [ "$input" == "y" ] || [ "$input" == "n" ] || [ "$input" == "Y" ] || [ "$input" == "N" ] || [ "$input" == "" ]; then
+			break
+		fi
+	done
+}
+
+function start_tomcat()
+{
+	while :
+	do
+		echo -e "**************************************************"
+		echo -e "*接下来将要启动单机版 TOMCAT 工程"
+		echo -e "**************************************************"
+		read -p "是否需要启动单机版 TOMCAT 工程:(Y/n)" input
+		if [ "$input" = "y" ] || [ "$input" = "Y" ] || [ "$input" = "" ]; then
+			echo "-----------------下面开始启动 TOMCAT 工程-------------------"
+			${dir_current}/tools/tomcat_start.sh
+			echo "----------------- TOMCAT 工程启动完毕-------------------"
+
+		fi
+		if [ "$input" == "y" ] || [ "$input" == "n" ] || [ "$input" == "Y" ] || [ "$input" == "N" ] || [ "$input" == "" ]; then
+			break
+		fi
+	done
+}
+
+function tail_log_tomcat()
+{
+	while :
+	do
+		echo -e "**************************************************"
+		echo -e "*接下来将要输出单机版 TOMCAT 日志"
+		echo -e "**************************************************"
+		read -p "是否需要输出单机版 TOMCAT 工程:(Y/n)" input
+		if [ "$input" = "y" ] || [ "$input" = "Y" ] || [ "$input" = "" ]; then
+			echo "-----------------下面开始输出 TOMCAT 日志-------------------"
+			tail -f /data/tomcat/EMMWEB/log/tomcat/catalina.out
+			echo "----------------- TOMCAT 日志输出完毕-------------------"
+		fi
+		if [ "$input" == "y" ] || [ "$input" == "n" ] || [ "$input" == "Y" ] || [ "$input" == "N" ] || [ "$input" == "" ]; then
+			break
+		fi
+	done
+}
+
+config_conver
+check_docker
+cont_run
+#cont_single
+#start_tomcat
+#sleep 20s
+#tail_log_tomcat

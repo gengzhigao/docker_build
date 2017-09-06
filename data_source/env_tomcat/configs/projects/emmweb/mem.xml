@@ -1,0 +1,2 @@
+<Context path="/mem" docBase="/data/tomcat/emm/mem" reloadable="true">
+</Context>

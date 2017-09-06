@@ -1,0 +1,30 @@
+############################################################
+# Dockerfile to build Tomcat7 Installed Containers
+# Based on Centos
+############################################################
+# Set the base image to Centos
+FROM docker.io/centos:6.6
+# File Author / Maintainer
+MAINTAINER Maintaner gengzhi
+# Add epel source to the default sources
+RUN rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+# Install jpackage depentent package
+RUN yum -y install yum-priorities
+# Add jpackage source to the default sources
+RUN rpm -Uvh http://mirrors.dotsrc.org/jpackage/6.0/generic/free/RPMS/jpackage-release-6-3.jpp6.noarch.rpm
+# Download and Install Tomcat7
+RUN yum -y install tomcat7 tomcat7-webapps tomcat7-admin-webapps tomcat-native --nogpgcheck
+# Remove the default Tomcat7 configuration file
+#RUN rm -v /etc/nginx/nginx.conf
+# Copy a configuration file from the current directory
+#ADD nginx.conf /etc/nginx/
+# Install glusterfs client
+RUN yum install -y glusterfs glusterfs-cli glusterfs-fuse
+# Add loader.sh start script
+ADD loader.sh /bin/
+RUN chmod +x /bin/loader.sh
+# Expose ports
+EXPOSE 8080
+EXPOSE 8443
+# Set the default command to execute
+CMD /bin/loader.sh

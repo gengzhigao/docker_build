@@ -1,0 +1,1 @@
+INSERT INTO TenantInfo (id,createdAt,tenantAddr,tenantAuthStatus,tenantFullName,tenantId,tenantInternetAddr,tenantLogo,tenantName,tenantTel) VALUES (1,now(),'',NULL,'','1846','','','ydyy','');

@@ -1,0 +1,15 @@
+修改域名或者访问IP：
+一、修改mam.properties，更换mam.properties里的域名
+docker-enter EMMWEB
+执行updatemam.sh
+service tomcat7 restart
+
+二、修改nginx转发配置文件
+docker-enter NGINX
+更换emmin_443.conf
+更换emmweb_18443.conf
+service nginx restart
+
+三、修改OA SQL
+docker-enter MYSQL
+mysql -uroot -p3g2win.com -D emm_db < /data/sql/update_menu_cfg.sql

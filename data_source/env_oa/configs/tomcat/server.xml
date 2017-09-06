@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Server port="28005" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="off" />
+  <Listener className="org.apache.catalina.core.JasperListener" />
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+
+  <Service name="Catalina">
+    <Executor name="tomcatThreadPool" namePrefix="catalina-exec-"
+        maxThreads="1000" minSpareThreads="20"/>
+
+    <Connector executor="tomcatThreadPool"
+               port="28080" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxHttpHeaderSize="8192" maxThreads="1000" processorCache="1000"
+               acceptCount="1000" minSpareThreads="100" acceptorThreadCount="8" URIEncoding="UTF-8"
+               enableLookups="false" keepAliveTimeout="20000"
+               maxKeepAliveRequests="65535" disableUploadTimeout="true"
+               compression="on" compressionMinSize="4096"
+               noCompressionUserAgents="gozilla, traviata"
+               compressableMimeType="text/html,text/xml,text/javascript,text/css,text/plain,application/json,application/x-javascript"
+               connectionTimeout="20000" />
+			   
+    <Engine name="Catalina" defaultHost="localhost">
+      <Host name="localhost"  appBase="webapps" unpackWARs="true" autoDeploy="true" />
+    </Engine>
+
+  </Service>
+</Server>

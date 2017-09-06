@@ -1,0 +1,27 @@
+############################################################
+# Dockerfile to build GFS Installed Containers
+# Based on Centos
+############################################################
+# Set the base image to Centos
+FROM docker.io/centos:6.6
+# File Author / Maintainer
+MAINTAINER Maintaner gengzhi
+# Modify the zone
+RUN echo "" > /etc/sysconfig/clock; \
+    echo "ZONE=Asia/Shanghai" >> /etc/sysconfig/clock; \
+    mv /etc/localtime /etc/localtime_bak; \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+# Install JDK
+RUN rpm -ivh http://ovfdlvm00.bkt.clouddn.com/jdk-7u79-linux-x64.rpm
+# Download and Install haproxy
+RUN yum clean all
+RUN yum install -y haproxy
+# Expose ports
+#EXPOSE 80
+# Set Environment
+ENV JAVA_HOME /usr/java/default
+# Add loader.sh start script
+ADD loader.sh /bin/
+RUN chmod +x /bin/loader.sh
+# Set the default command to execute
+CMD /bin/loader.sh

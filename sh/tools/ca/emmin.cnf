@@ -1,0 +1,53 @@
+[ ssl_server ]
+basicConstraints        = CA:FALSE
+nsCertType              = server
+keyUsage                = digitalSignature, keyEncipherment
+extendedKeyUsage        = serverAuth, nsSGC, msSGC
+#nsComment               = "OpenSSL Certificate for SSL Web Server"
+
+
+subjectAltName = IP:192.168.1.224,DNS:192.168.1.224,URI:https://192.168.1.224:8443/
+
+subjectAltName = IP:192.168.1.98,DNS:192.168.1.98,URI:https://192.168.1.98:8443/
+
+subjectAltName = IP:192.168.1.171,DNS:192.168.1.171,URI:https://192.168.1.171:8443/
+
+subjectAltName = IP:192.168.1.115,DNS:192.168.1.115,URI:https://192.168.1.115:8443/
+
+subjectAltName = IP:192.168.1.115,DNS:192.168.1.115,URI:https://192.168.1.115:8443/
+
+subjectAltName = IP:192.168.1.115,DNS:192.168.1.115,URI:https://192.168.1.115:8443/
+
+subjectAltName = IP:192.168.1.115,DNS:192.168.1.115,URI:https://192.168.1.115:8443/
+
+subjectAltName = IP:192.168.1.115,DNS:192.168.1.115,URI:https://192.168.1.115:8443/
+
+subjectAltName = IP:192.168.1.115,DNS:192.168.1.115,URI:https://192.168.1.115:8443/
+
+subjectAltName = IP:192.168.1.115,DNS:192.168.1.115,URI:https://192.168.1.115:8443/
+
+subjectAltName = IP:192.168.1.115,DNS:192.168.1.115,URI:https://192.168.1.115:8443/
+
+subjectAltName = IP:192.168.201.143,DNS:192.168.201.143,URI:https://192.168.201.143:8443/
+
+subjectAltName = IP:192.168.1.23,DNS:192.168.1.23,URI:https://192.168.1.23:8443/
+
+subjectAltName = IP:192.168.201.145,DNS:192.168.201.145,URI:https://192.168.201.145:8443/
+
+subjectAltName = IP:192.168.201.143,DNS:192.168.201.143,URI:https://192.168.201.143:8443/
+
+subjectAltName = IP:192.168.126.152,DNS:192.168.126.152,URI:https://192.168.126.152:8443/
+
+subjectAltName = IP:192.168.126.152,DNS:192.168.126.152,URI:https://192.168.126.152:8443/
+
+subjectAltName = IP:192.168.126.152,DNS:192.168.126.152,URI:https://192.168.126.152:8443/
+
+subjectAltName = IP:192.168.126.152,DNS:192.168.126.152,URI:https://192.168.126.152:8443/
+
+subjectAltName = IP:192.168.126.152,DNS:192.168.126.152,URI:https://192.168.126.152:8443/
+
+subjectAltName = IP:192.168.1.107,DNS:192.168.1.107,URI:https://192.168.1.107:8443/
+
+subjectAltName = IP:192.168.1.109,DNS:192.168.1.109,URI:https://192.168.1.109:8443/
+subjectAltName = IP:enp0s3,DNS:enp0s3,URI:https://enp0s3:8443/
+subjectAltName = IP:192.168.2.226,DNS:192.168.2.226,URI:https://192.168.2.226:8443/

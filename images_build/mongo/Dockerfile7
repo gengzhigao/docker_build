@@ -1,0 +1,36 @@
+############################################################
+# Dockerfile to build Mongod Installed Containers
+# Based on Centos
+############################################################
+# Set the base image to Centos
+FROM docker.io/centos:7
+# File Author / Maintainer
+MAINTAINER Maintaner gengzhi
+# Modify the zone
+RUN echo "" > /etc/sysconfig/clock; \
+	echo "ZONE=Asia/Shanghai" >> /etc/sysconfig/clock; \
+	mv /etc/localtime /etc/localtime_bak; \
+	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+# Add mongo.repo to the default sources
+ADD mongodb-enterprise.repo /etc/yum.repos.d/
+RUN yum clean all
+RUN yum -y install mongodb-enterprise
+# Download and Install Mongod
+#RUN yum install -y http://ovfdlvm00.bkt.clouddn.com/mongo/mongodb-enterprise-3.4.7-1.el6.x86_64.rpm \ 
+#	http://ovfdlvm00.bkt.clouddn.com/mongo/mongodb-enterprise-mongos-3.4.7-1.el6.x86_64.rpm \
+#	http://ovfdlvm00.bkt.clouddn.com/mongo/mongodb-enterprise-server-3.4.7-1.el6.x86_64.rpm \
+#	http://ovfdlvm00.bkt.clouddn.com/mongo/mongodb-enterprise-shell-3.4.7-1.el6.x86_64.rpm \
+#	http://ovfdlvm00.bkt.clouddn.com/mongo/mongodb-enterprise-tools-3.4.7-1.el6.x86_64.rpm 
+# Remove the default Mongod configuration file
+#RUN mv /etc/mongod.conf /etc/mongod.conf_init
+# Copy a configuration file from the current directory
+#COPY mongod_single.conf /etc/mongod.conf
+# Copy ha script to /opt directory
+COPY mongoha.script /opt
+# Expose ports
+EXPOSE 27017
+# Add loader.sh start script
+COPY loader.sh /bin/
+RUN chmod +x /bin/loader.sh
+# Set the default command to execute
+CMD /bin/loader.sh

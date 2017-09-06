@@ -1,0 +1,110 @@
+#!/bin/bash
+dir_current=$(cd `dirname $0`; pwd)
+
+function create_lvm_data()
+{
+    read -p "是否需要为data目录创建LVM:(Y/n)" input
+    if [ "$input" = "y" ] || [ "$input" = "Y" ] || [ "$input" = "" ]; then
+        # create LV
+        read -p "请输入需要 data 逻辑卷的大小，输入的时候需要包含单位G(默认为200G):" input
+        if [ "$input" == "" ]; then
+            input=200G
+        elif [[ ! $input =~ "g" ]] || [[ ! $input =~ "G" ]]; then
+            input=${input}G;
+        fi
+        lvcreate -L ${input} -n data vg-docker
+
+        if [ -L /dev/vg-docker/data ]; then
+            echo -e "\n\n**********接下来将要初始化data lv并绑定到/data目录**********"
+            mkfs.ext4 /dev/vg-docker/data
+            mkdir /data
+            mount /dev/vg-docker/data /data
+            grep "APPCAN LVM ENV" /etc/fstab >/dev/null
+            if [ $? -eq 0 ]; then
+                echo -e "LVM 环境变量已经初始化\n\n\n"
+            else
+                echo "开始初始化 LVM 环境变量****************"
+                echo "#**************APPCAN LVM ENV********************" >> /etc/fstab
+                cp /etc/fstab /etc/fstab_bak_ggz_`date "+%Y%m%d"`
+                echo "/dev/vg-docker/data /data ext4 defaults 1 1" >> /etc/fstab
+            fi
+            echo -e "\n\n********************磁盘信息如下********************"
+            df -Th
+        else
+            echo -e "\n\n \033[31m *********** data LVM 创建失败，请手工核实原因，谢谢！ ************ \033[0m"
+        fi
+    fi
+}
+
+function create_lvm()
+{
+    echo -e "\n"
+    dir_docker="/var/lib/docker"
+    echo -e "**************************************************"
+    echo -e "*接下来将要为docker创建LVM，docker将使用dockerdata"
+    echo -e "*的元数据"
+    echo -e "**************************************************"
+    while :
+    do
+        read -p "是否需要为docker创建LVM:(Y/n)" input
+        if [ "$input" = "y" ] || [ "$input" = "Y" ] || [ "$input" = "" ]; then
+            read -p "请输入需要创建LVM的磁盘或者分区名称(默认为/dev/sdb):" input
+            if [ "$input" == "" ]; then
+                input="/dev/sdb"
+            fi
+            # 删除现有docker目录
+            systemctl stop docker
+            rm -rf ${dir_docker}
+
+            # create VG
+            diskpath=${input}
+            A=`pvcreate ${diskpath}`
+            if [ "${A}" == "" ]; then
+                echo "${diskpath}该磁盘(分区)不存在，请使用fdisk -l命令检查后，重新输入："
+                continue
+            else
+                # create VG
+                vgcreate vg-docker ${diskpath}
+
+                # create LV
+                read -p "请输入需要 dockerdata 逻辑卷的大小，输入的时候需要包含单位G(默认为50G):" input
+                if [ "$input" == "" ]; then
+                    input=50G
+                elif [[ ! $input =~ "g" ]] || [[ ! $input =~ "G" ]]; then
+                    input=${input}G;
+                fi
+                lvcreate -L ${input} -n dockerdata vg-docker
+
+                # create LV
+                read -p "请输入需要 metadata 逻辑卷的大小，输入的时候需要包含单位G(默认为5G):" input
+                if [ "$input" == "" ]; then
+                    input=4G
+                elif [[ ! $input =~ "g" ]] || [[ ! $input =~ "G" ]]; then
+                    input=${input}G;
+                fi
+                lvcreate -L ${input} -n metadata vg-docker
+
+                create_lvm_data
+                echo -e "\n\n********************LVM信息如下********************:"
+                lsblk
+
+                # 同步docker配置文件
+                if [ -f ${dir_current}/../env/docker ]; then
+                    \cp ${dir_current}/../env/docker /etc/sysconfig/docker
+                elif [ -f ${dir_current}/docker ]; then
+                    \cp ${dir_current}/docker /etc/sysconfig/docker
+                fi
+                systemctl restart docker
+                echo -e "\n\n********************docker 运行信息如下********************:"
+                docker info
+                echo -e "\n"
+                break
+            fi
+        fi
+        if [ "$input" == "y" ] || [ "$input" == "n" ] || [ "$input" == "Y" ] || [ "$input" == "N" ] || [ "$input" == "" ]; then
+            break
+        fi
+    done
+}
+
+create_lvm

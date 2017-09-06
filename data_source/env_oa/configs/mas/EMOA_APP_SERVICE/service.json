@@ -1,0 +1,187 @@
+{
+    "meap": {
+        "servicename": "EMOA_APP_SERVICE",
+        "logstate": true,
+        "cluster": 1,
+        "serviceinfo": "AppCan Adapter Server to manage the Mobile Client request and dispatch it to corresponding interface",
+        "interfacedir": "/data/MASProjects/EMOA_APP_SERVICE/interface",
+        "appPolicyPower": 0,
+        "ifPolicyPower": 0,
+        "counterPower": 0,
+        "cookie": {
+            "host": "127.0.1.1",
+            "port": "46379",
+            "poolsize": "10",
+            "db": "0",
+            "authtype": "",
+            "authpass": "appcan.cn",
+            "type": "0",
+            "sentinelName": "mymaster",
+            "sentinels": [
+                {
+                    "host": "redis-1",
+                    "port": "6379"
+                },
+                {
+                    "host": "redis-2",
+                    "port": "6379"
+                },
+                {
+                    "host": "redis-3",
+                    "port": "6379"
+                }
+            ],
+            "cluster": [
+                {
+                    "host": "127.0.0.1",
+                    "port": "6379"
+                }
+            ]
+        },
+        "cache": {
+            "host": "127.0.1.1",
+            "port": "46379",
+            "poolsize": "10",
+            "db": "1",
+            "authtype": "",
+            "authpass": "appcan.cn",
+            "type": "0",
+            "sentinelName": "mymaster",
+            "sentinels": [
+                {
+                    "host": "redis-1",
+                    "port": "6379"
+                },
+                {
+                    "host": "redis-2",
+                    "port": "6379"
+                },
+                {
+                    "host": "redis-3",
+                    "port": "6379"
+                }
+            ],
+            "cluster": [
+                {
+                    "host": "127.0.0.1",
+                    "port": "6379"
+                }
+            ]
+        },
+        "authpool": {
+            "host": "127.0.1.1",
+            "port": "46379",
+            "poolsize": "10",
+            "db": "2",
+            "authtype": "",
+            "authpass": "appcan.cn",
+            "type": "0",
+            "sentinelName": "mymaster",
+            "sentinels": [
+                {
+                    "host": "redis-1",
+                    "port": "6379"
+                },
+                {
+                    "host": "redis-2",
+                    "port": "6379"
+                },
+                {
+                    "host": "redis-3",
+                    "port": "6379"
+                }
+            ],
+            "cluster": [
+                {
+                    "host": "127.0.0.1",
+                    "port": "6379"
+                }
+            ]
+        },
+        "log": {
+            "power": "0",
+            "host": "127.0.0.1",
+            "port": "6379",
+            "poolsize": "10",
+            "db": "0",
+            "authtype": "",
+            "authpass": "",
+            "type": "0",
+            "sentinelName": "mymaster",
+            "sentinels": [
+                {
+                    "host": "127.0.0.1",
+                    "port": "26379"
+                }
+            ],
+            "cluster": [
+                {
+                    "host": "127.0.0.1",
+                    "port": "6379"
+                }
+            ]
+        },
+        "counterMonitor": {
+            "host": "127.0.0.1",
+            "port": "6379",
+            "poolsize": "10",
+            "db": "0",
+            "authtype": "",
+            "authpass": "",
+            "power": "0",
+            "type": "0",
+            "sentinelName": "mymaster",
+            "sentinels": [
+                {
+                    "host": "127.0.0.1",
+                    "port": "26379"
+                }
+            ],
+            "cluster": [
+                {
+                    "host": "127.0.0.1",
+                    "port": "6379"
+                }
+            ]
+        },
+        "sessionpool": {
+            "switch": false,
+            "running": "300",
+            "waiting": "300",
+            "timeout": "30"
+        },
+        "threshold": {
+            "hour": "0",
+            "day": "0",
+            "minute": "0"
+        },
+        "services": [
+            {
+                "name": "mobile_adapter_service",
+                "port": 18180,
+                "protocal": "HTTP",
+                "certificate": {
+                    "key": "",
+                    "cert": ""
+                },
+                "secure": false,
+                "auth": {
+                    "type": "ssl",
+                    "ca": ""
+                },
+                "timeout": "60",
+                "subservicename": "APPSERVICE"
+            }
+        ],
+        "projects": [
+            "emoa/00.0001",
+            "attachment/00.0001"
+        ],
+        "clusterState": false,
+        "appValidTime": 600,
+        "liveTime": 86400,
+        "serviceAuthKey": "",
+        "name": "企业协同办公数据支撑服务",
+        "globalmonitorchannel": "globalmonitorchannel"
+    }
+}

@@ -1,0 +1,3 @@
+use admin
+cfg={ _id:"mongo.emm", members:[ {_id:0,host:'mongo-master:27017',priority:2}, {_id:1,host:'mongo-slave:27017',priority:1},{_id:2,host:'mongo-arbiter:27017',arbiterOnly:true}] };
+rs.initiate(cfg)

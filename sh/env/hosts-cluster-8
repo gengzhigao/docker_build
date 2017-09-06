@@ -1,0 +1,29 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.1.101 env1.emm env1
+192.168.1.102 env2.emm env2
+192.168.1.103 env3.emm env3
+192.168.1.104 env4.emm env4
+192.168.1.105 env5.emm env5
+192.168.1.106 env6.emm env6
+192.168.1.107 env7.emm env7
+192.168.1.108 env8.emm env8
+
+# 下面配置文件，默认指向 emmconsole 机器的内网IP
+192.168.1.103 zymobi-loadBalanceServer zymobi-innerMbaasserver zymobi-innerTomcatConsoleServer emmconsole mbaas-server
+# mam.properties 文件中需要替换的域名
+127.0.0.1 zymobi-outerNginxServer zymobi-consoleServer
+
+192.168.1.104 zk1 hdp-node1 hdp-master
+192.168.1.105 zk2 hdp-node2 hdp-master-s
+192.168.1.106 zk3 hdp-node3 hdp-third
+
+192.168.1.101 mongo-slave    redis-1  mysql-1  gfs-master
+192.168.1.102 mongo-arbiter  redis-2  mysql-2  gfs-slave
+192.168.1.103 mongo-master   redis-3
+
+192.168.1.107 emmin-1 push-1 im-1 nginx-emmin-1
+192.168.1.108 emmin-2 push-2 im-2 nginx-emmin-2
+
+192.168.1.103 zabbix-server

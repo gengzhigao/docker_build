@@ -1,0 +1,12 @@
+{
+    "tenantId": "1846",
+    "tenantName": "ydyy",
+    "domainName": "企业移动门户统一认证",
+    "MOBILEOA_SecretKey": "c143e1da353942c689f36eca8680a0c8",
+    "MOBILEOA_appKey": "appcanmobileoa",
+    "MOBILEOA_appId": "MOBILEOA",
+    "EPortal_appId": "EPortal",
+    "EPortal_PushKey": "0c8150c3bdcf4dedba715642e0524e27",
+    "EPortal_SecretKey": "3749d454e01c4914bc3fd99ebe1f4ea4",
+    "EPortal_appKey": "0647513c-88f1-46c9-b764-b38e19f0e4e6"
+}

@@ -1,0 +1,5 @@
+[docker]
+name=docker-source
+baseurl=file:///opt/docker/docker_yum
+gpgcheck=0
+enabled=1
